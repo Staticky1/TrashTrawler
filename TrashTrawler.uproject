@@ -1,0 +1,22 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{EC28708F-48C5-1879-13C4-54A8FFDB38DD}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "TrashTrawler",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "ModelingToolsEditorMode",
+			"Enabled": true,
+			"TargetAllowList": [
+				"Editor"
+			]
+		}
+	]
+}
