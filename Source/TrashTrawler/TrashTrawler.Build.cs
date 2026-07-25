@@ -13,10 +13,7 @@ public class TrashTrawler : ModuleRules
 			"CoreUObject",
 			"Engine",
 			"InputCore",
-			"EnhancedInput",
-			"GeometryFramework",
-			"DynamicMesh",
-            "GeometryCore"
+			"EnhancedInput"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
