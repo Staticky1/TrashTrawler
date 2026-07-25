@@ -11,6 +11,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
+#include "NetPawn.h"
+#include "NetItem.h"
 
 // Sets default values
 ABoatPawn::ABoatPawn()
@@ -43,7 +45,7 @@ ABoatPawn::ABoatPawn()
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 1800.f;
 	CameraBoom->SetRelativeRotation(FRotator(-15.f, 0.f, 0.f));
-	CameraBoom->bDoCollisionTest = false;
+	CameraBoom->bDoCollisionTest = true;
 
 	CameraBoom->bEnableCameraLag = true;
 	CameraBoom->bEnableCameraRotationLag = true;
@@ -53,6 +55,7 @@ ABoatPawn::ABoatPawn()
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+
 }
 
 // Called when the game starts or when spawned
@@ -60,6 +63,25 @@ void ABoatPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ABoatPawn::OnNetReturned()
+{
+	if (ActiveNet)
+	{
+		const TArray<ANetItem*> CaughtItems = ActiveNet->GetCaughtItems();
+		for (ANetItem* CaughtItem : CaughtItems)
+		{
+			if (CaughtItem)
+			{
+				AddPoints(CaughtItem->GetPointValue());
+			}
+		}
+	}
+
+	ActiveNet = nullptr;
+
+
 }
 
 void ABoatPawn::NotifyControllerChanged()
@@ -176,6 +198,7 @@ void ABoatPawn::Tick(float DeltaTime)
 	const float BoatYaw = GetActorRotation().Yaw;
 	CameraBoom->SetWorldRotation(FRotator(LookPitch, BoatYaw + LookYaw, 0.f));
 
+
 }
 
 // Called to bind functionality to input
@@ -226,6 +249,7 @@ void ABoatPawn::OnDeployNet()
 		if (BoatMappingContext) Sub->RemoveMappingContext(BoatMappingContext);
 	}
 	PC->Possess(ActiveNet); // fires ANetPawn::NotifyControllerChanged → adds the net's context
+
 }
 
 void ABoatPawn::OnThrottle(const FInputActionValue& Value)

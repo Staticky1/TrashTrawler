@@ -14,6 +14,7 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 class ANetPawn;
+class UCableComponent;
 
 UCLASS()
 class TRASHTRAWLER_API ABoatPawn : public APawn
@@ -167,12 +168,20 @@ private:
 	TObjectPtr<ANetPawn> ActiveNet;
 
 	void OnDeployNet();
+
+	//points
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Points", meta = (AllowPrivateAccess = "true"))
+	int32 Points = 0;
+
 public:
 	// Called by the net so it knows where to come home to, and to clean up.
 	FVector GetNetDockLocation() const { return NetDropPoint->GetComponentLocation(); }
-	void OnNetReturned() { ActiveNet = nullptr; }
+	void OnNetReturned();
 
 	virtual void NotifyControllerChanged() override;
+
+	int32 GetPoints() const { return Points; }
+	void AddPoints(int32 Delta) { Points += Delta; }
 
 protected:
 	// Called when the game starts or when spawned
